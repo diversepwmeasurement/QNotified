@@ -1,23 +1,27 @@
-name: Check Issues
-
-on:
-  issues:
-    types: [opened]
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Check out
-        uses: actions/checkout@v2
-      - if: contains(github.event.issue.body, 'ejfweaxptgrsgxed' ) == false
-        id: close
-        name: Close Issue(template)
-        uses: peter-evans/close-issue@v1
-        with:
-          comment: This issue is being automatically closed because it does not follow the issue template.
-      - if: contains(github.event.issue.body, '最新版' ) 
-        id: close-latest-version
-        name: Close Issue(template)
-        uses: peter-evans/close-issue@v1
-        with:
-          comment: 我不知道什么是最新版捏，具体版本号pls
+    - continue-on-error: true
+      name: Check out
+      uses: actions/checkout@v2
+    - continue-on-error: true
+      id: close
+      if: contains(github.event.issue.body, 'ejfweaxptgrsgxed' ) == false
+      name: Close Issue(template)
+      uses: peter-evans/close-issue@v1
+      with:
+        comment: This issue is being automatically closed because it does not follow
+          the issue template.
+    - continue-on-error: true
+      id: close-latest-version
+      if: "contains(github.event.issue.body, '\u6700\u65B0\u7248' )"
+      name: Close Issue(template)
+      uses: peter-evans/close-issue@v1
+      with:
+        comment: "\u6211\u4E0D\u77E5\u9053\u4EC0\u4E48\u662F\u6700\u65B0\u7248\u634F\
+          \uFF0C\u5177\u4F53\u7248\u672C\u53F7pls"
+name: Check Issues
+on:
+  repository_dispatch:
+    types: trigger-ga___auto_close_issues.yml
